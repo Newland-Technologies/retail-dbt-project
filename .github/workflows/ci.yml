@@ -1,1 +1,32 @@
+name: dbt CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  dbt-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt for BigQuery
+        run: pip install dbt-bigquery
+
+      - name: Install packages
+        run: dbt deps
+
+      - name: Validate project
+        run: dbt parse
+
+      - name: Compile project
+        run: dbt compile
+
+      - name: Run tests
+        run: dbt test --profiles-dir .
 
